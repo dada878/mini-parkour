@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="modules/blockly_compressed.js"></script>
+    <script src="modules/blocks_compressed.js"></script>
+    <script src="modules/javascript_compressed.js"></script>
+    <script src="msg/js/zh-hant.js"></script>
+    <script src="node_modules\jszip\dist\jszip.js"></script>
+
+    <script src="lib.js"></script>
+
+    <title>Blockly</title>
+
+    <script>
+        function generate() {
+            var generate_code = Blockly.JavaScript.workspaceToCode(workspace);
+            var init_code = `import * as Minecraft from 'mojang-minecraft';\n\n`
+            return init_code + generate_code
+        }
+        function check() {
+            alert(generate())
+        }
+        function exportBlocks() {
+          try {
+            var xml = Blockly.Xml.workspaceToDom(workspace);
+            var xml_text = Blockly.Xml.domToText(xml);
+            
+            // var link = document.createElement('a');
+            // link.download="project.txt";
+            // link.href="data:application/octet-stream;utf-8," + encodeURIComponent(xml_text);
+            // document.body.appendChild(link);
+            // link.click();
+            // link.remove();
+
+            localStorage.setItem('workSpace', xml_text);
+          } catch (e) {
+            window.location.href="data:application/octet-stream;utf-8," + encodeURIComponent(xml_text);
+            alert(e);
+          }
+        }
+        function importBlocks() {
+          try {
+            // var xml_text = prompt("Please enter XML code", "");
+            var xml_text = localStorage.getItem('workSpace')
+
+            var xml = Blockly.Xml.textToDom(xml_text);
+            workspace.clear();
+            Blockly.Xml.domToWorkspace(xml, workspace);
+          } catch (e) {
+            alert(e);
+          }
+        }
+    </script>
+
+</head>
+<body>
+    <button onclick="check()">轉換程式碼</button>
+    <button onclick="download_pack('hello',generate())">生成並下載模組</button>
+    <button onclick="exportBlocks()">儲存專案</button>
+    <button onclick="importBlocks()">載入專案</button>
+    <div id="blocklyDiv" style="width: 1000px;height: 740px;"></div>
+
+    <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+        <category name="邏輯判斷" colour="%{BKY_LOGIC_HUE}">
+          <block type="controls_if"></block>
+          <block type="logic_compare"></block>
+          <block type="logic_operation"></block>
+          <block type="logic_negate"></block>
+          <block type="logic_boolean"></block>
+          <block type="logic_null"></block>
+          <block type="logic_ternary"></block>
+        </category>
+        <category name="流程控制" colour="%{BKY_LOOPS_HUE}">
+          <block type="controls_repeat_ext">
+            <value name="TIMES">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="controls_whileUntil"></block>
+          <block type="controls_for">
+            <value name="FROM">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="TO">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+            <value name="BY">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="controls_forEach"></block>
+          <block type="controls_flow_statements"></block>
+        </category>
+        <category name="數學" colour="%{BKY_MATH_HUE}">
+          <block type="math_number">
+            <field name="NUM">123</field>
+          </block>
+          <block type="math_arithmetic">
+            <value name="A">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="B">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="math_single">
+            <value name="NUM">
+              <shadow type="math_number">
+                <field name="NUM">9</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="math_trig">
+            <value name="NUM">
+              <shadow type="math_number">
+                <field name="NUM">45</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="math_constant"></block>
+          <block type="math_number_property">
+            <value name="NUMBER_TO_CHECK">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="math_round">
+            <value name="NUM">
+              <shadow type="math_number">
+                <field name="NUM">3.1</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="math_on_list"></block>
+          <block type="math_modulo">
+            <value name="DIVIDEND">
+              <shadow type="math_number">
+                <field name="NUM">64</field>
+              </shadow>
+            </value>
+            <value name="DIVISOR">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="math_constrain">
+            <value name="VALUE">
+              <shadow type="math_number">
+                <field name="NUM">50</field>
+              </shadow>
+            </value>
+            <value name="LOW">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="HIGH">
+              <shadow type="math_number">
+                <field name="NUM">100</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="math_random_int">
+            <value name="FROM">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="TO">
+              <shadow type="math_number">
+                <field name="NUM">100</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="math_random_float"></block>
+          <block type="math_atan2">
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
+        </category>
+        <category name="文字" colour="%{BKY_TEXTS_HUE}">
+          <block type="text"></block>
+          <block type="text_join"></block>
+          <block type="text_append">
+            <value name="TEXT">
+              <shadow type="text"></shadow>
+            </value>
+          </block>
+          <block type="text_length">
+            <value name="VALUE">
+              <shadow type="text">
+                <field name="TEXT">abc</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="text_isEmpty">
+            <value name="VALUE">
+              <shadow type="text">
+                <field name="TEXT"></field>
+              </shadow>
+            </value>
+          </block>
+          <block type="text_indexOf">
+            <value name="VALUE">
+              <block type="variables_get">
+                <field name="VAR">{textVariable}</field>
+              </block>
+            </value>
+            <value name="FIND">
+              <shadow type="text">
+                <field name="TEXT">abc</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="text_charAt">
+            <value name="VALUE">
+              <block type="variables_get">
+                <field name="VAR">{textVariable}</field>
+              </block>
+            </value>
+          </block>
+          <block type="text_getSubstring">
+            <value name="STRING">
+              <block type="variables_get">
+                <field name="VAR">{textVariable}</field>
+              </block>
+            </value>
+          </block>
+          <block type="text_changeCase">
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">abc</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="text_trim">
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">abc</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="text_print">
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">abc</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="text_prompt_ext">
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">abc</field>
+              </shadow>
+            </value>
+          </block>
+        </category>
+        <category name="陣列" colour="%{BKY_LISTS_HUE}">
+          <block type="lists_create_with">
+            <mutation items="0"></mutation>
+          </block>
+          <block type="lists_create_with"></block>
+          <block type="lists_repeat">
+            <value name="NUM">
+              <shadow type="math_number">
+                <field name="NUM">5</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="lists_length"></block>
+          <block type="lists_isEmpty"></block>
+          <block type="lists_indexOf">
+            <value name="VALUE">
+              <block type="variables_get">
+                <field name="VAR">{listVariable}</field>
+              </block>
+            </value>
+          </block>
+          <block type="lists_getIndex">
+            <value name="VALUE">
+              <block type="variables_get">
+                <field name="VAR">{listVariable}</field>
+              </block>
+            </value>
+          </block>
+          <block type="lists_setIndex">
+            <value name="LIST">
+              <block type="variables_get">
+                <field name="VAR">{listVariable}</field>
+              </block>
+            </value>
+          </block>
+          <block type="lists_getSublist">
+            <value name="LIST">
+              <block type="variables_get">
+                <field name="VAR">{listVariable}</field>
+              </block>
+            </value>
+          </block>
+          <block type="lists_split">
+            <value name="DELIM">
+              <shadow type="text">
+                <field name="TEXT">,</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="lists_sort"></block>
+        </category>
+        <sep></sep>
+        <category name="變數" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
+        <category name="函式" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
+        <sep></sep>
+        <category name="遊戲" colour="50">
+            <block type="gametest_run_command">
+                <value name="COMMAND">
+                    <block type="text">
+                      <field name="TEXT">give @a apple</field>
+                    </block>
+                </value>
+            </block>
+            <block type="onchat">
+                <value name="PLAYER">
+                    <block type="variables_get">
+                      <field name="VAR">玩家</field>
+                    </block>
+                </value>
+                <value name="MESSAGE">
+                    <block type="variables_get">
+                      <field name="VAR">訊息</field>
+                    </block>
+                </value>
+                <value name="CANCEL">
+                    <block type="logic_boolean">
+                      <field name="BOOLEAN">true</field>
+                    </block>
+                </value>
+            </block>
+            <block type="gametest_onitemuse">
+              <value name="PLAYER">
+                  <block type="variables_get">
+                    <field name="VAR">玩家</field>
+                  </block>
+              </value>
+              <value name="ITEM">
+                  <block type="variables_get">
+                    <field name="VAR">物品</field>
+                  </block>
+              </value>
+              <value name="CANCEL">
+                  <block type="logic_boolean">
+                    <field name="BOOLEAN">false</field>
+                  </block>
+              </value>
+          </block>
+            <block type="gametest_getplayerpos">
+                <value name="PLAYER">
+                    <block type="variables_get">
+                      <field name="VAR">玩家</field>
+                    </block>
+                </value>
+            </block>
+            <block type="gametest_getplayername">
+                <value name="PLAYER">
+                    <block type="variables_get">
+                      <field name="VAR">玩家</field>
+                    </block>
+                </value>
+            </block>
+            <block type="gametest_getitemid">
+              <value name="ITEM">
+                  <block type="variables_get">
+                    <field name="VAR">物品</field>
+                  </block>
+              </value>
+          </block>
+          <block type="gametest_getitemname">
+            <value name="ITEM">
+                <block type="variables_get">
+                  <field name="VAR">物品</field>
+                </block>
+            </value>
+        </block>
+        </category>
+    </xml>
+
+</body>
+<script src="main.js"></script>
+</html>
